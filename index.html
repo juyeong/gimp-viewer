@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>암호화폐 시세확인 - 비트코인 이더리움 김프</title>
+  <meta name="Description" content="비트코인 이더리움 시세, 프리미엄 확인">
+  <meta name="Keywords" content="비트코인,이더리움,김프,김치프리미엄,암호화폐">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="암호화폐 시세확인 - 비트코인 이더리움 김프">
+  <meta property="og:description" content="비트코인 이더리움 시세, 프리미엄 확인">
+  <meta property="og:url" content="https://coin.jy.is/">
+  <meta property="og:image" content="https://coin.jy.is/assets/image.jpg">
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-112737939-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-112737939-1');
+  </script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"/>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-4058631809999862",
+      enable_page_level_ads: true
+    });
+  </script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+  <style>@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);</style>
+  <style>
+    body { font-size: 0.95rem; }
+    @media (max-width: 36em) {
+      body { font-size: 0.7rem; }
+      .btn-group-sm>.btn { font-size: 0.7rem; }
+    }
+  </style>
+</head>
+
+<body style="font-family: 'Noto Sans KR', sans-serif;">
+  <div class="container" style="padding-top: 20px;">
+    <div style="text-align: center;">
+      <small class="time-refresh-text"></small>
+      <small> 후 </small>
+      <small><a class="time-refresh-button" href="#">새로고침</a></small>
+      <small>/ 최종 업데이트: </a></small>
+      <small class="updated-at">-</a></small>
+    </div>
+    <div style="text-align: center; margin-top: 10px;">
+      <div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-outline-secondary active">
+          <input type="radio" name="time" id="t10" autocomplete="off"> 10분
+        </label>
+        <label class="btn btn-outline-secondary">
+          <input type="radio" name="time" id="t30" autocomplete="off"> 30분
+        </label>
+        <label class="btn btn-outline-secondary">
+          <input type="radio" name="time" id="t60" autocomplete="off"> 1시간
+        </label>
+        <label class="btn btn-outline-secondary">
+          <input type="radio" name="time" id="t720" autocomplete="off"> 12시간
+        </label>
+
+      </div>
+      <div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-outline-secondary active gimp-onboarding" data-toggle="popover" data-placement="bottom" data-content="김프를 확인해보세요!">
+          <input type="radio" name="rate" id="gimp" autocomplete="off"> 김프
+        </label>
+        <label class="btn btn-outline-secondary">
+          <input type="radio" name="rate" id="change" autocomplete="off"> 변동률
+        </label>
+      </div>
+    </div>
+    <div class="table-responsive-lg" style="margin: 20px auto auto auto; max-width: 550px">
+      <table class="table table-sm text-center">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">BITFINEX</th>
+            <th scope="col">빗썸</th>
+            <th scope="col">코인원</th>
+            <th scope="col">업비트</th>
+          </tr>
+        </thead>
+        <tbody calss="tbody">
+          <tr>
+            <th scope="row">BTC</th>
+            <td class="btc-bitfinex">-</td>
+            <td class="btc-bithumb">-</td>
+            <td class="btc-coinone">-</td>
+            <td class="btc-upbit">-</td>
+          </tr>
+          <tr>
+            <th scope="row">BCH</th>
+            <td class="bch-bitfinex">-</td>
+            <td class="bch-bithumb">-</td>
+            <td class="bch-coinone">-</td>
+            <td class="bch-upbit">-</td>
+          </tr>
+          <tr>
+            <th scope="row">ETH</th>
+            <td class="eth-bitfinex">-</td>
+            <td class="eth-bithumb">-</td>
+            <td class="eth-coinone">-</td>
+            <td class="eth-upbit">-</td>
+          </tr>
+          <tr>
+            <th scope="row">ETC</th>
+            <td class="etc-bitfinex">-</td>
+            <td class="etc-bithumb">-</td>
+            <td class="etc-coinone">-</td>
+            <td class="etc-upbit">-</td>
+          </tr>
+          <tr>
+            <th scope="row">XRP</th>
+            <td class="xrp-bitfinex">-</td>
+            <td class="xrp-bithumb">-</td>
+            <td class="xrp-coinone">-</td>
+            <td class="xrp-upbit">-</td>
+          </tr>
+          <tr>
+            <th scope="row">QTUM</th>
+            <td class="qtum-bitfinex">-</td>
+            <td class="qtum-bithumb">-</td>
+            <td class="qtum-coinone">-</td>
+            <td class="qtum-upbit">-</td>
+          </tr>
+          <tr>
+            <th scope="row">LTC</th>
+            <td class="ltc-bitfinex">-</td>
+            <td class="ltc-bithumb">-</td>
+            <td class="ltc-coinone">-</td>
+            <td class="ltc-upbit">-</td>
+          </tr>
+          <tr>
+            <th scope="row">IOTA</th>
+            <td class="iota-bitfinex">-</td>
+            <td class="iota-bithumb">-</td>
+            <td class="iota-coinone">-</td>
+            <td class="iota-upbit">-</td>
+          </tr>
+          <tr>
+            <th scope="row">BTG</th>
+            <td class="btg-bitfinex">-</td>
+            <td class="btg-bithumb">-</td>
+            <td class="btg-coinone">-</td>
+            <td class="btg-upbit">-</td>
+          </tr>
+          <tr>
+            <th scope="row">DASH</th>
+            <td class="dash-bitfinex">-</td>
+            <td class="dash-bithumb">-</td>
+            <td class="dash-coinone">-</td>
+            <td class="dash-upbit">-</td>
+          </tr>
+          <tr>
+            <th scope="row">XMR</th>
+            <td class="xmr-bitfinex">-</td>
+            <td class="xmr-bithumb">-</td>
+            <td class="xmr-coinone">-</td>
+            <td class="xmr-upbit">-</td>
+          </tr>
+          <tr>
+            <th scope="row">ZEC</th>
+            <td class="zec-bitfinex">-</td>
+            <td class="zec-bithumb">-</td>
+            <td class="zec-coinone">-</td>
+            <td class="zec-upbit">-</td>
+          </tr>
+          <tr>
+            <th scope="row">EOS</th>
+            <td class="eos-bitfinex">-</td>
+            <td class="eos-bithumb">-</td>
+            <td class="eos-coinone">-</td>
+            <td class="eos-upbit">-</td>
+          </tr>
+          <tr>
+            <th scope="row">SNT</th>
+            <td class="snt-bitfinex">-</td>
+            <td class="snt-bithumb">-</td>
+            <td class="snt-coinone">-</td>
+            <td class="snt-upbit">-</td>
+          </tr>
+          <tr>
+            <th scope="row">NEO</th>
+            <td class="neo-bitfinex">-</td>
+            <td class="neo-bithumb">-</td>
+            <td class="neo-coinone">-</td>
+            <td class="neo-upbit">-</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin: 20px auto auto auto; max-width: 550px" id="disqus_thread" />
+  </div>
+
+  <div class="modal" id="loading-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  /**
+  *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+  *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+  /*
+  var disqus_config = function () {
+  this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+  this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+  };
+  */
+  (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://coin-jy-is.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+  </script>
+
+  <script src="dst/bundle.js"></script>
+</body>
+
+</html>

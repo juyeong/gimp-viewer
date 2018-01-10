@@ -1,0 +1,54 @@
+{
+	"data": [	{
+		"exchange": "bitfinex",
+		"coin": "btc",
+		"price": 14324,
+		"time": 0
+	}, {
+		"exchange": "bitfinex",
+		"coin": "eth",
+		"price": 1344.8,
+		"time": 0
+	}, {
+		"exchange": "bithumb",
+		"coin": "btc",
+		"price": 20765000,
+		"time": 0
+	}, {
+		"exchange": "coinone",
+		"coin": "btc",
+		"price": 20901000,
+		"time": 0
+	}, {
+		"exchange": "bithumb",
+		"coin": "eth",
+		"price": 1943300,
+		"time": 0
+	}, {
+		"exchange": "bitfinex",
+		"coin": "btc",
+		"price": 14024,
+		"time": 10
+	}, {
+		"exchange": "bitfinex",
+		"coin": "eth",
+		"price": 1304.8,
+		"time": 10
+	}, {
+		"exchange": "bithumb",
+		"coin": "btc",
+		"price": 20865000,
+		"time": 10
+	}, {
+		"exchange": "coinone",
+		"coin": "btc",
+		"price": 20801000,
+		"time": 10
+	}, {
+		"exchange": "bithumb",
+		"coin": "eth",
+		"price": 1963300,
+		"time": 10
+	}],
+	"updated_at": 1516458070568
+}
