@@ -66,7 +66,7 @@ function ready(fn: (EventListenerOrEventListenerObject?: any, useCapture?: boole
 }
 
 function main() {
-  let rate: string = 'change';
+  let rate: string = 'translate';
   let time: number = 10;
   let priceData: ICoinPrice[] = [];
   let refreshTime: number = 60;
@@ -75,10 +75,12 @@ function main() {
 
   function setRate(newRate: string) {
     switch(newRate) {
-      case "gimp":
-      case "change":
-          rate = newRate;
-          break;
+      case 'gimp':
+      case 'translate':
+        rate = newRate;
+        break;
+      case 'change':
+        rate = 'translate';
     }
   }
 
@@ -198,7 +200,7 @@ function main() {
                 let bitfinexPrice = getPrice(BITFINEX, coin, 0);
                 let bitfinexLastPrice = getPrice(BITFINEX, coin, time);
                 renderGimp(exchange, cell, price, lastPrice, bitfinexPrice, bitfinexLastPrice);
-              } else if (rate === 'change') {
+              } else if (rate === 'translate') {
                 renderChanges(exchange, cell, price, lastPrice);
               }
             }
@@ -268,14 +270,17 @@ function main() {
           if (button.id === 'gimp') {
             setRate('gimp');
             render();
-          } else if (button.id === 'change') {
-            setRate('change');
+            ga('send', 'event', 'Filter', 'SetIndicator', 'gimp');
+          } else if (button.id === 'translate') {
+            setRate('translate');
             render();
+            ga('send', 'event', 'Filter', 'SetIndicator', 'translate');
           }
         } else if (button.name === 'time') {
           let time = button.id.slice(1, button.id.length);
           setTime(parseInt(time));
           fetchPriceData();
+          ga('send', 'event', 'Filter', 'SetTime', time);
         }
         updateUrl();
       });
@@ -336,8 +341,14 @@ function main() {
   }
 
   function updateButtons() {
-    (document.querySelector(`input[type=radio][name=rate][id=${getRate()}]`) as HTMLInputElement).click();
-    (document.querySelector(`input[type=radio][name=time][id=t${getTime()}]`) as HTMLInputElement).click();
+    let rateButton = document.querySelector(`input[type=radio][name=rate][id=${getRate()}]`) as HTMLInputElement;
+    if (rateButton) {
+      rateButton.click();
+    }
+    let timeButton = document.querySelector(`input[type=radio][name=time][id=t${getTime()}]`) as HTMLInputElement;
+    if (timeButton) {
+      timeButton.click();
+    }
   }
 
   function setRefreshTimer() {
