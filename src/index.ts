@@ -353,13 +353,15 @@ function main() {
 
   function setRefreshTimer() {
     (document.querySelector('.time-refresh-button') as HTMLElement).addEventListener('click', () => {
-       fetchPriceData();
+        fetchPriceData();
+        ga('send', 'event', 'Refresh', 'ClickButton', 'refresh');
     });
     window.setInterval(() => {
       decRefreshTime();
       updateRefreshText();
       if (getRefreshTime() == 0) {
         fetchPriceData();
+        ga('send', 'event', 'Refresh', 'Timeout', 'refresh');
       }
     }, 1000);
   }
