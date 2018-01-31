@@ -54,7 +54,9 @@ const EOS: ICoin = { name: "eos" }
 const IOTA: ICoin = { name: "iota" }
 const SNT: ICoin = { name: "snt" }
 const NEO: ICoin = { name: "neo" }
-const COINS = [BTC,ETH,XRP,LTC,QTUM,DASH,ETC,BCH,XMR,ZEC,BTG,EOS,IOTA,SNT,NEO]
+const ADA: ICoin = { name: "ada" }
+const XLM: ICoin = { name: "xlm" }
+const COINS = [BTC,ETH,XRP,LTC,QTUM,DASH,ETC,BCH,XMR,ZEC,BTG,EOS,IOTA,SNT,NEO,ADA,XLM]
 
 
 function ready(fn: (EventListenerOrEventListenerObject?: any, useCapture?: boolean) => void) {
@@ -214,16 +216,9 @@ function main() {
   }
 
   function renderChanges(exchange: IExchange, cell: HTMLTableRowElement, price: number, lastPrice: number) {
+    let priceChange = price / lastPrice - 1;
     if (lastPrice != 0 && price != 0) {
-      let priceChange = price / lastPrice - 1;
-      let fontColor;
-      if (priceChange > 0) {
-        fontColor = 'red';
-      } else if (priceChange < 0) {
-        fontColor = 'blue';
-      } else {
-        fontColor = 'black';
-      }
+      let fontColor = getFontColor(priceChange);
       cell.innerHTML = `<span style="color: ${fontColor};">${formatPrice(price, exchange.currency.name)}</span><br><small data-toggle="popover" data-placement="bottom" data-content="${formatPrice(lastPrice, exchange.currency.name)}">${(100 * priceChange).toFixed(2)}%</small>`;
     } else {
       cell.innerHTML = `<span>${formatPrice(price, exchange.currency.name)}</span>`;
@@ -231,22 +226,28 @@ function main() {
   }
 
   function renderGimp(exchange: IExchange, cell: HTMLTableRowElement, price: number, lastPrice: number, basePrice: number, baseLastPrice: number) {
-    const currencyRate = getCurrencyRate();
-    if (basePrice != 0 && price != 0) {
-      let priceChange = price / lastPrice - 1;
-      let fontColor = priceChange > 0 ? 'red' : 'blue';
-      if (currencyRate == 0) {
-        cell.innerHTML = `<span style="color: ${fontColor};">${formatPrice(price, exchange.currency.name)}</span><br>`;
-      } else {
-        let gimp = price / (basePrice * currencyRate) - 1;
-        let lastGimp = lastPrice / (baseLastPrice * currencyRate) - 1;
-        let gimpChange = (100 * (gimp - lastGimp))
-        let formattedGimpChange = gimpChange > 0 ? `+${gimpChange.toFixed(2)}%` : `${gimpChange.toFixed(2)}%`
-        cell.innerHTML = `<span style="color: ${fontColor};">${formatPrice(price, exchange.currency.name)}</span><br><small  data-toggle="popover" data-placement="bottom" data-content="${formattedGimpChange}">${(100 * gimp).toFixed(2)}%</small>`;
-      }
-
+    if (price == 0) { return; }
+    let currencyRate = getCurrencyRate();
+    let priceChange = price / lastPrice - 1;
+    let fontColor = getFontColor(priceChange);
+    if (basePrice == 0 || currencyRate == 0) {
+      cell.innerHTML = `<span style="color: ${fontColor};">${formatPrice(price, exchange.currency.name)}</span>`;
     } else {
-      cell.innerHTML = `<span>${formatPrice(price, exchange.currency.name)}</span>`;
+      let gimp = price / (basePrice * currencyRate) - 1;
+      let lastGimp = lastPrice / (baseLastPrice * currencyRate) - 1;
+      let gimpChange = (100 * (gimp - lastGimp))
+      let formattedGimpChange = gimpChange > 0 ? `+${gimpChange.toFixed(2)}%` : `${gimpChange.toFixed(2)}%`
+      cell.innerHTML = `<span style="color: ${fontColor};">${formatPrice(price, exchange.currency.name)}</span><br><small  data-toggle="popover" data-placement="bottom" data-content="${formattedGimpChange}">${(100 * gimp).toFixed(2)}%</small>`;
+    }
+  }
+
+  function getFontColor(priceChange: number) {
+    if (priceChange > 0) {
+      return 'red';
+    } else if (priceChange < 0) {
+      return 'blue';
+    } else {
+      return 'black';
     }
   }
 
