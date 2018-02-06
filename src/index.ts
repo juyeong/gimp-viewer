@@ -184,8 +184,8 @@ function main() {
   }
 
   function render() {
-    EXCHANGES.forEach(exchange => 
-      COINS.forEach(coin => {
+    COINS.forEach(coin => {
+      EXCHANGES.forEach(exchange => {
         let cell = getCell(exchange, coin);
         if (cell != null) {
           let price = getPrice(exchange, coin, 0);
@@ -208,8 +208,8 @@ function main() {
             }
           }
         }
-      })
-    );
+      });
+    });
     $(function () {
       $('[data-toggle="popover"]').popover({ 'trigger': 'hover', })
     })
@@ -351,6 +351,15 @@ function main() {
     if (timeButton) {
       timeButton.click();
     }
+    let bookmark = document.querySelector('.bookmark')
+    if (bookmark) {
+      bookmark.addEventListener('click', () => {
+        if (window.external && ('AddFavorite' in window.external)) {
+          // Internet Explorer
+          (window.external as any).AddFavorite(location.href, document.title); 
+        }
+      })
+    }
   }
 
   function setRefreshTimer() {
@@ -425,6 +434,7 @@ function main() {
     } else {
       gimpButton.popover('disable');
     }
+
   }
 
   showLoading(true);
