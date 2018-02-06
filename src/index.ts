@@ -306,8 +306,9 @@ function main() {
           console.log(error.response.status);
           console.log(error.response.headers);
         } else {
-          alert(error.message);
+          console.log(error.message);
         }
+        resetRefreshTime();
       })
   }
 
