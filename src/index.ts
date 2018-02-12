@@ -6,6 +6,8 @@ interface ICoin {
 interface IExchange {
   name: string;
   currency: ICurrency;
+  url: string;
+  displayName: string;
 }
 interface ICurrency {
   name: string;
@@ -33,10 +35,10 @@ const USD: ICurrency = { name: "usd" }
 const JPY: ICurrency = { name: "jpy" }
 const CURRENCIES = [KRW, USD, JPY]
 //exchange
-const BITFINEX: IExchange = { name: "bitfinex", currency: USD }
-const BITHUMB: IExchange = { name: "bithumb", currency: KRW }
-const COINONE: IExchange = { name: "coinone", currency: KRW }
-const UPBIT: IExchange = { name: "upbit", currency: KRW }
+const BITFINEX: IExchange = { name: "bitfinex", currency: USD, url: 'https://www.bitfinex.com', displayName: 'BITFINEX' }
+const BITHUMB: IExchange = { name: "bithumb", currency: KRW, url: 'https://www.bithumb.com', displayName: '빗썸' }
+const COINONE: IExchange = { name: "coinone", currency: KRW, url: 'https://www.coinone.co.kr', displayName: '코인원' }
+const UPBIT: IExchange = { name: "upbit", currency: KRW, url: 'https://upbit.com', displayName: '업비트' }
 const EXCHANGES = [BITFINEX, BITHUMB, COINONE, UPBIT]
 //coin
 const BTC: ICoin = { name: "btc" }
@@ -133,10 +135,6 @@ function main() {
     refreshTime = 60;
   }
 
-  function getCell(exchange: IExchange, coin: ICoin): HTMLTableRowElement {
-    return document.querySelector(`.${coin.name}-${exchange.name}`);
-  }
-
   function getExchange(name: string) {
     return EXCHANGES.find(exchange => {
       return exchange.name === name
@@ -183,61 +181,96 @@ function main() {
     return formatter.format(price);
   }
 
-  function render() {
+  function renderTHead() {
+    let thead = document.querySelector('thead');
+    for (let row of Array.from(thead.rows)) { row.remove(); }
+    let row = thead.insertRow();
+    row.insertCell().outerHTML = '<th scope="col"></th>';
+    EXCHANGES.forEach(exchange => {
+      let cell = row.insertCell();
+      cell.outerHTML = `<th scope="col"><a href="${exchange.url}" class="text-dark" target="_blank">${exchange.displayName}</a></th>`
+    });
+  }
+
+  function renderTBody() {
+    let tbody = document.querySelector('tbody');
+    for (let row of Array.from(tbody.rows)) { row.remove(); }
     COINS.forEach(coin => {
+      let row = tbody.insertRow();
+      let cell = row.insertCell();
+      cell.outerHTML = `<th scope="row">${coin.name.toUpperCase()}<br><a href="${getChartLink(coin)}" class="text-muted" target="_blank"><small class="oi oi-bar-chart" /></a></th>`
       EXCHANGES.forEach(exchange => {
-        let cell = getCell(exchange, coin);
-        if (cell != null) {
-          let price = getPrice(exchange, coin, 0);
-          if (price == 0) {
-            cell.innerText = '-';
+        // let cell = getCell(exchange, coin);
+        let html
+        let price = getPrice(exchange, coin, 0);
+        if (price == 0) {
+          html = '-';
+        } else {
+          let time = getTime();
+          let lastPrice = getPrice(exchange, coin, time);
+          if (exchange === BITFINEX) {
+            html = renderChanges(exchange, price, lastPrice);
           } else {
-            let time = getTime();
-            let lastPrice = getPrice(exchange, coin, time);
-            if (exchange === BITFINEX) {
-              renderChanges(exchange, cell, price, lastPrice);
-            } else {
-              let rate = getRate();
-              if (rate === 'gimp') {
-                let bitfinexPrice = getPrice(BITFINEX, coin, 0);
-                let bitfinexLastPrice = getPrice(BITFINEX, coin, time);
-                renderGimp(exchange, cell, price, lastPrice, bitfinexPrice, bitfinexLastPrice);
-              } else if (rate === 'translate') {
-                renderChanges(exchange, cell, price, lastPrice);
-              }
+            let rate = getRate();
+            if (rate === 'gimp') {
+              let bitfinexPrice = getPrice(BITFINEX, coin, 0);
+              let bitfinexLastPrice = getPrice(BITFINEX, coin, time);
+              html = renderGimp(exchange, price, lastPrice, bitfinexPrice, bitfinexLastPrice);
+            } else if (rate === 'translate') {
+              html = renderChanges(exchange, price, lastPrice);
             }
           }
         }
+        let cell = row.insertCell();
+        cell.innerHTML = html;
       });
     });
+  }
+
+  function render() {
+    renderTHead();
+    renderTBody();
     $(function () {
       $('[data-toggle="popover"]').popover({ 'trigger': 'hover', })
     })
   }
 
-  function renderChanges(exchange: IExchange, cell: HTMLTableRowElement, price: number, lastPrice: number) {
+  function renderChanges(exchange: IExchange, price: number, lastPrice: number) {
     let priceChange = price / lastPrice - 1;
     if (lastPrice != 0 && price != 0) {
       let fontColor = getFontColor(priceChange);
-      cell.innerHTML = `<span style="color: ${fontColor};">${formatPrice(price, exchange.currency.name)}</span><br><small data-toggle="popover" data-placement="bottom" data-content="${formatPrice(lastPrice, exchange.currency.name)}">${(100 * priceChange).toFixed(2)}%</small>`;
+      return `<span style="color: ${fontColor};">${formatPrice(price, exchange.currency.name)}</span><br><small data-toggle="popover" data-placement="bottom" data-content="${formatPrice(lastPrice, exchange.currency.name)}">${(100 * priceChange).toFixed(2)}%</small>`;
     } else {
-      cell.innerHTML = `<span>${formatPrice(price, exchange.currency.name)}</span>`;
+      return `<span>${formatPrice(price, exchange.currency.name)}</span>`;
     }
   }
 
-  function renderGimp(exchange: IExchange, cell: HTMLTableRowElement, price: number, lastPrice: number, basePrice: number, baseLastPrice: number) {
-    if (price == 0) { return; }
+  function renderGimp(exchange: IExchange,  price: number, lastPrice: number, basePrice: number, baseLastPrice: number) {
+    if (price == 0) { return ''; }
     let currencyRate = getCurrencyRate();
     let priceChange = price / lastPrice - 1;
     let fontColor = getFontColor(priceChange);
     if (basePrice == 0 || currencyRate == 0) {
-      cell.innerHTML = `<span style="color: ${fontColor};">${formatPrice(price, exchange.currency.name)}</span>`;
+      return `<span style="color: ${fontColor};">${formatPrice(price, exchange.currency.name)}</span>`;
     } else {
       let gimp = price / (basePrice * currencyRate) - 1;
       let lastGimp = lastPrice / (baseLastPrice * currencyRate) - 1;
       let gimpChange = (100 * (gimp - lastGimp))
       let formattedGimpChange = gimpChange > 0 ? `+${gimpChange.toFixed(2)}%` : `${gimpChange.toFixed(2)}%`
-      cell.innerHTML = `<span style="color: ${fontColor};">${formatPrice(price, exchange.currency.name)}</span><br><small  data-toggle="popover" data-placement="bottom" data-content="${formattedGimpChange}">${(100 * gimp).toFixed(2)}%</small>`;
+      return `<span style="color: ${fontColor};">${formatPrice(price, exchange.currency.name)}</span><br><small  data-toggle="popover" data-placement="bottom" data-content="${formattedGimpChange}">${(100 * gimp).toFixed(2)}%</small>`;
+    }
+  }
+
+  function getChartLink(coin: ICoin) {
+    switch (coin) {
+      case XLM:
+        return 'https://upbit.com/exchange?code=CRIX.UPBIT.KRW-XLM'
+      case ADA:
+        return 'https://upbit.com/exchange?code=CRIX.UPBIT.KRW-ADA'
+      case IOTA:
+        return 'https://cryptowat.ch/bitfinex/iotusd'
+      default:
+        return `https://cryptowat.ch/bitfinex/${coin.name}usd`
     }
   }
 
