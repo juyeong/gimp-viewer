@@ -172,10 +172,20 @@ function main() {
   }
 
   function formatPrice(price: number, currency: string) {
+    let digits;
+    if (price < 10) {
+      digits = 3;
+    } else if (price < 100) {
+      digits = 2;
+    } else if (price < 1000) {
+      digits = 1;
+    } else {
+      digits = 0;
+    }
     let formatter = new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currency,
-      minimumFractionDigits: 0,
+      minimumFractionDigits: digits,
     });
 
     return formatter.format(price);
