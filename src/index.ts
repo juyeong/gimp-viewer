@@ -58,8 +58,28 @@ const SNT: ICoin = { name: "snt" }
 const NEO: ICoin = { name: "neo" }
 const ADA: ICoin = { name: "ada" }
 const XLM: ICoin = { name: "xlm" }
-const COINS = [BTC,ETH,XRP,LTC,QTUM,DASH,ETC,BCH,XMR,ZEC,BTG,EOS,IOTA,SNT,NEO,ADA,XLM]
-
+const XEM: ICoin = { name: 'xem' }
+const STEEM: ICoin = { name: 'steem' }
+const MER: ICoin = { name: 'mer' }
+const STRAT: ICoin = { name: 'strat' }
+const SBD: ICoin = { name: 'sbd' }
+const OMG: ICoin = { name: 'omg' }
+const LSK: ICoin = { name: 'lsk' }
+const TIX: ICoin = { name: 'tix' }
+const EMC2: ICoin = { name: 'emc2' }
+const ARDR: ICoin = { name: 'ardr' }
+const PIVX: ICoin = { name: 'pivx' }
+const POWR: ICoin = { name: 'powr' }
+const MTL: ICoin = { name: 'mtl' }
+const GRS: ICoin = { name: 'grs' }
+const STORJ: ICoin = { name: 'storj' }
+const ARK: ICoin = { name: 'ark' }
+const REP: ICoin = { name: 'rep' }
+const KMD: ICoin = { name: 'kmd' }
+const WAVES: ICoin = { name: 'waves' }
+const VTC: ICoin = { name: 'vtc' }
+const COINS = [BTC,ETH,XRP,LTC,QTUM,DASH,ETC,BCH,XMR,ZEC,BTG,EOS,IOTA,SNT,NEO,OMG,REP,ADA,XLM,XEM,STEEM,MER,STRAT,SBD,LSK,TIX,EMC2,ARDR,PIVX,POWR,MTL,GRS,STORJ,ARK,KMD,WAVES,VTC]
+const UPBIT_COINS = [ADA,XLM,XEM,STEEM,MER,STRAT,SBD,LSK,TIX,EMC2,ARDR,PIVX,POWR,MTL,GRS,STORJ,ARK,KMD,WAVES,VTC]
 
 function ready(fn: (EventListenerOrEventListenerObject?: any, useCapture?: boolean) => void) {
   if ((document as any).attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
@@ -272,11 +292,10 @@ function main() {
   }
 
   function getChartLink(coin: ICoin) {
+    if (UPBIT_COINS.indexOf(coin) >= 0) {
+      return `https://upbit.com/exchange?code=CRIX.UPBIT.KRW-${coin.name.toUpperCase()}`
+    }
     switch (coin) {
-      case XLM:
-        return 'https://upbit.com/exchange?code=CRIX.UPBIT.KRW-XLM'
-      case ADA:
-        return 'https://upbit.com/exchange?code=CRIX.UPBIT.KRW-ADA'
       case IOTA:
         return 'https://cryptowat.ch/bitfinex/iotusd'
       default:
