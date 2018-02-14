@@ -39,7 +39,8 @@ const BITFINEX: IExchange = { name: "bitfinex", currency: USD, url: 'https://www
 const BITHUMB: IExchange = { name: "bithumb", currency: KRW, url: 'https://www.bithumb.com', displayName: '빗썸' }
 const COINONE: IExchange = { name: "coinone", currency: KRW, url: 'https://www.coinone.co.kr', displayName: '코인원' }
 const UPBIT: IExchange = { name: "upbit", currency: KRW, url: 'https://upbit.com', displayName: '업비트' }
-const EXCHANGES = [BITFINEX, BITHUMB, COINONE, UPBIT]
+const BINANCE: IExchange = { name: "binance", currency: USD, url: 'https://www.binance.com', displayName: 'BINANCE' }
+const EXCHANGES = [BITFINEX, BINANCE, BITHUMB, COINONE, UPBIT]
 //coin
 const BTC: ICoin = { name: "btc" }
 const ETH: ICoin = { name: "eth" }
@@ -155,6 +156,18 @@ function main() {
     refreshTime = 60;
   }
 
+  function getBaseExchnage() {
+    return BITFINEX;
+  }
+
+  function getExchanges() {
+    return [BITHUMB, COINONE, UPBIT];
+  }
+
+  function getAllExchanges() {
+    return [getBaseExchnage()].concat(getExchanges());
+  }
+
   function getExchange(name: string) {
     return EXCHANGES.find(exchange => {
       return exchange.name === name
@@ -216,7 +229,7 @@ function main() {
     for (let row of Array.from(thead.rows)) { row.remove(); }
     let row = thead.insertRow();
     row.insertCell().outerHTML = '<th scope="col"></th>';
-    EXCHANGES.forEach(exchange => {
+    getAllExchanges().forEach(exchange => {
       let cell = row.insertCell();
       cell.outerHTML = `<th scope="col"><a href="${exchange.url}" class="text-dark" target="_blank">${exchange.displayName}</a></th>`
     });
@@ -229,7 +242,7 @@ function main() {
       let row = tbody.insertRow();
       let cell = row.insertCell();
       cell.outerHTML = `<th scope="row">${coin.name.toUpperCase()}<br><a href="${getChartLink(coin)}" class="text-muted" target="_blank"><small class="oi oi-bar-chart" /></a></th>`
-      EXCHANGES.forEach(exchange => {
+      getAllExchanges().forEach(exchange => {
         // let cell = getCell(exchange, coin);
         let html
         let price = getPrice(exchange, coin, 0);
@@ -238,17 +251,17 @@ function main() {
         } else {
           let time = getTime();
           let lastPrice = getPrice(exchange, coin, time);
-          if (exchange === BITFINEX) {
-            html = renderChanges(exchange, price, lastPrice);
-          } else {
-            let rate = getRate();
-            if (rate === 'gimp') {
-              let bitfinexPrice = getPrice(BITFINEX, coin, 0);
-              let bitfinexLastPrice = getPrice(BITFINEX, coin, time);
+          if (rate === 'gimp') {
+            if (exchange == getBaseExchnage()) {
+              html = renderKorPrice(exchange, price, lastPrice);
+            } else {
+              let baseExchange = getBaseExchnage();
+              let bitfinexPrice = getPrice(baseExchange, coin, 0);
+              let bitfinexLastPrice = getPrice(baseExchange, coin, time);
               html = renderGimp(exchange, price, lastPrice, bitfinexPrice, bitfinexLastPrice);
-            } else if (rate === 'translate') {
-              html = renderChanges(exchange, price, lastPrice);
             }
+          } else {
+            html = renderChanges(exchange, price, lastPrice);
           }
         }
         let cell = row.insertCell();
@@ -275,9 +288,30 @@ function main() {
     }
   }
 
+  function renderKorPrice(exchange: IExchange, price: number, lastPrice: number) {
+    let currencyRate = getCurrencyRate();
+    let priceChange = price / lastPrice - 1;
+    let korPrice = price * currencyRate;
+    if (lastPrice != 0 && korPrice != 0) {
+      let fontColor = getFontColor(priceChange);
+      let formattedPrice = formatPrice(price, exchange.currency.name);
+      let formattedKorPrice = formatPrice(korPrice, KRW.name);
+      return `<span style="color: ${fontColor};">${formattedPrice}</span><br><small>${formattedKorPrice}</small>`;
+    } else {
+      return `<span>${formatPrice(price, exchange.currency.name)}</span>`;
+    }
+  }
+
   function renderGimp(exchange: IExchange,  price: number, lastPrice: number, basePrice: number, baseLastPrice: number) {
     if (price == 0) { return ''; }
-    let currencyRate = getCurrencyRate();
+    let baseExchange = getBaseExchnage();
+    let currencyRate;
+    if (baseExchange.currency === USD && exchange.currency === KRW) {
+      currencyRate = getCurrencyRate();
+    } else {
+      currencyRate = 1;
+    }
+
     let priceChange = price / lastPrice - 1;
     let fontColor = getFontColor(priceChange);
     if (basePrice == 0 || currencyRate == 0) {
