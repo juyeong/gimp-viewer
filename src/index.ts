@@ -231,7 +231,8 @@ function main() {
     row.insertCell().outerHTML = '<th scope="col"></th>';
     getAllExchanges().forEach(exchange => {
       let cell = row.insertCell();
-      cell.outerHTML = `<th scope="col"><a href="${exchange.url}" class="text-dark" target="_blank">${exchange.displayName}</a></th>`
+      cell.outerHTML = `<th scope="col"><a href="${exchange.url}" class="text-dark ${exchange.name}" target="_blank">${exchange.displayName}</a><small class="ban-${exchange.name}"/></th>`
+      updateExchangeStatus(exchange);
     });
   }
 
@@ -497,7 +498,7 @@ function main() {
         } else {
           console.log(error.message);
         }
-      })    
+      })
   }
 
   function showLoading(loading: boolean) {
@@ -531,6 +532,83 @@ function main() {
       gimpButton.popover('disable');
     }
 
+  }
+
+  async function updateExchangeStatus(exchange: IExchange) {
+    let active;
+    switch (exchange) {
+      case BITFINEX:
+        active = await isBitfinexActive();
+        break;
+      case BITHUMB:
+        active = await isBithumbActive();
+        break;
+      case COINONE:
+        active = await isCoinoneActive();
+        break;
+      case UPBIT:
+        active = await isUpbitActive();
+        break;
+      default:
+        active = true;
+        break;
+    }
+    if (!active) {
+      let targetIcon = document.querySelector(`.ban-${exchange.name}`)
+      if (targetIcon) {
+        targetIcon.className = 'oi oi-ban text-danger'
+      }
+    }
+  }
+
+  async function isBitfinexActive() {
+    try {
+      let response = await axios.get('https://api.bitfinex.com/v2/platform/status')
+      return response.data[0] == 1
+    } catch(e) {
+      console.log('bitfinex', e);
+      return false;
+    }
+  }
+
+  async function isBithumbActive() {
+    try {
+      let response = await axios.get('https://api.bithumb.com/public/ticker/BTC')
+      let status = response.data.status;
+      let date = parseInt(response.data.data.date, 10);
+      let currentTime = new Date().getTime();
+      let validDate = date - 10000 < currentTime && currentTime < date + 10000
+      return status === '0000' && validDate;
+    } catch(e) {
+      console.log('bithumb', e);
+      return false;
+    }
+  }
+
+  async function isCoinoneActive() {
+    try {
+      let response = await axios.get('https://api.coinone.co.kr/ticker?currency=btc')
+      let result = response.data.result;
+      let timestamp = parseInt(response.data.timestamp, 10);
+      let currentTime = new Date().getTime() / 1000;
+      let validDate = timestamp - 10 < currentTime && currentTime < timestamp + 10
+      return result === 'success' && validDate;
+    } catch(e) {
+      console.log('coinone', e);
+      return false;
+    }
+  }
+
+  async function isUpbitActive() {
+    try {
+      let response = await axios.get('https://ccx.upbit.com/api/v1/timestamp')
+      let timestamp = parseInt(response.data, 10);
+      let currentTime = new Date().getTime() / 1000;
+      return timestamp - 10 < currentTime && currentTime < timestamp + 10;
+    } catch(e) {
+      console.log('upbit', e);
+      return false;
+    }
   }
 
   showLoading(true);
