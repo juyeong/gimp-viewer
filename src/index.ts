@@ -29,6 +29,12 @@ interface IResponse {
   currency: string;
 }
 
+interface ICurrencyResponse {
+  source: string;
+  target: string;
+  rate: number;
+}
+
 // // currency
 const KRW: ICurrency = { name: "krw" }
 const USD: ICurrency = { name: "usd" }
@@ -115,6 +121,10 @@ function main() {
 
   function setCurrencyRate(rate: number) {
     currencyRate = rate;
+    let currency = document.querySelector('.currency');
+    if (currency != null) {
+      currency.setAttribute('data-content', formatPrice(rate, KRW.name))
+    }
   }
 
   function getCurrencyRate() {
@@ -484,21 +494,24 @@ function main() {
       }    
   }
 
-  function fetchCurrencyRate() {
-    axios.get('https://api.manana.kr/exchange/rate/KRW/USD.json')
-      .then((response: AxiosResponse) => {
-        setCurrencyRate(response.data[0]['rate'])
-        render();
-      })
-      .catch((error: AxiosError) => {
-        if (error.response) {
-          console.error(error.response.data);
-          console.log(error.response.status);
-          console.log(error.response.headers);
-        } else {
-          console.log(error.message);
-        }
-      })
+  async function updateCurrencyRate() {
+    let rate = await getRemoteCurrencyRate();
+    console.log('currency', rate)
+    if (rate > 0) {
+      setCurrencyRate(rate);
+      render();
+    }
+  }
+
+  async function getRemoteCurrencyRate() {
+    try {
+      let response = await axios.get('https://15130i3vgl.execute-api.ap-northeast-2.amazonaws.com/dev/currency')
+      let data = response.data.data as ICurrencyResponse[]
+      return data.filter(d => d.source === 'USD' && d.target === 'KRW').map(d => d.rate)[0]
+    } catch(e) {
+      console.log('currency', e)
+    }
+    return 0;
   }
 
   function showLoading(loading: boolean) {
@@ -616,7 +629,7 @@ function main() {
   updateButtons();
   addLiseners();
   setRefreshTimer();
-  fetchCurrencyRate();
+  updateCurrencyRate();
   fetchPriceData();
   showOnboarding();
 }
