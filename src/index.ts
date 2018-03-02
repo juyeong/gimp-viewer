@@ -234,12 +234,32 @@ function main() {
     return formatter.format(price);
   }
 
+  function forEach(list: any, callback: (item: any) => void) {
+    if (list.forEach) {
+      list.forEach(callback);
+    } else if (Array && Array.from) {
+      Array.from(list).forEach(callback);
+    } else {
+      let array = [];
+      for (let i = 0 ; i < list.length; i++) {
+        array.push(list[i]);
+      }
+      if (array.forEach) {
+        array.forEach(callback);
+      } else {
+        for (let i = 0 ; i < array.length; i++) {
+          callback(array[i]);
+        }
+      }
+    }
+  }
+
   function renderTHead() {
     let thead = document.querySelector('thead');
-    for (let row of Array.from(thead.rows)) { row.remove(); }
+    forEach(thead.rows, row => row.remove());
     let row = thead.insertRow();
     row.insertCell().outerHTML = '<th scope="col"></th>';
-    getAllExchanges().forEach(exchange => {
+    forEach(getAllExchanges(), exchange => {
       let cell = row.insertCell();
       cell.outerHTML = `<th scope="col"><a href="${exchange.url}" class="text-dark ${exchange.name}" target="_blank">${exchange.displayName}</a><small class="ban-${exchange.name}"/></th>`
       updateExchangeStatus(exchange);
@@ -248,12 +268,12 @@ function main() {
 
   function renderTBody() {
     let tbody = document.querySelector('tbody');
-    for (let row of Array.from(tbody.rows)) { row.remove(); }
-    COINS.forEach(coin => {
+    forEach(tbody.rows, row => row.remove());
+    forEach(COINS, coin => {
       let row = tbody.insertRow();
       let cell = row.insertCell();
       cell.outerHTML = `<th scope="row">${coin.name.toUpperCase()}<br><a href="${getChartLink(coin)}" class="text-muted" target="_blank"><small class="oi oi-bar-chart" /></a></th>`
-      getAllExchanges().forEach(exchange => {
+      forEach(getAllExchanges(), exchange => {
         // let cell = getCell(exchange, coin);
         let html
         let price = getPrice(exchange, coin, 0);
@@ -372,7 +392,7 @@ function main() {
 
   function addLiseners() {
     let radioButtons = document.querySelectorAll('input[type=radio]');
-    Array.from(radioButtons).forEach((button: HTMLInputElement) => {
+    forEach(radioButtons, (button: HTMLInputElement) => {
       button.addEventListener('focus', () => {
         if (button.name === 'rate') {
           if (button.id === 'gimp') {
