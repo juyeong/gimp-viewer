@@ -88,6 +88,48 @@ const VTC: ICoin = { name: 'vtc' }
 const COINS = [BTC,ETH,XRP,LTC,QTUM,DASH,ETC,BCH,XMR,ZEC,BTG,EOS,IOTA,SNT,NEO,OMG,REP,ADA,XLM,XEM,STEEM,MER,STRAT,SBD,LSK,TIX,EMC2,ARDR,PIVX,POWR,MTL,GRS,STORJ,ARK,KMD,WAVES,VTC]
 const UPBIT_COINS = [ADA,XLM,XEM,STEEM,MER,STRAT,SBD,LSK,TIX,EMC2,ARDR,PIVX,POWR,MTL,GRS,STORJ,ARK,KMD,WAVES,VTC]
 
+function forEach(list: any, callback: (item: any) => void) {
+  if (list.forEach) {
+    list.forEach(callback);
+  } else if (Array && Array.from) {
+    Array.from(list).forEach(callback);
+  } else {
+    let array = [];
+    for (let i = 0 ; i < list.length; i++) {
+      array.push(list[i]);
+    }
+    if (array.forEach) {
+      array.forEach(callback);
+    } else {
+      for (let i = 0 ; i < array.length; i++) {
+        callback(array[i]);
+      }
+    }
+  }
+}
+
+function find(list: any, callback: (item: any) => boolean) {
+  if (list.find) {
+    return list.find(callback);
+  } else if (list.filter) {
+    return list.filter(callback)[0]
+  } else {
+    let array = [];
+    for (let i = 0 ; i < list.length; i++) {
+      array.push(list[i]);
+    }
+    if (array.find) {
+      return array.find(callback);
+    } else {
+      for (let i = 0 ; i < array.length; i++) {
+        if (callback(array[i])) {
+          return array[i];
+        }
+      }
+    }
+  }
+}
+
 function ready(fn: (EventListenerOrEventListenerObject?: any, useCapture?: boolean) => void) {
   if ((document as any).attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
     fn();
@@ -179,19 +221,19 @@ function main() {
   }
 
   function getExchange(name: string) {
-    return EXCHANGES.find(exchange => {
+    return find(EXCHANGES, exchange => {
       return exchange.name === name
     });
   }
 
   function getCoin(name: string) {
-    return COINS.find(coin => {
+    return find(COINS, coin => {
       return coin.name === name
     });
   }
 
   function getCurrency(name: string) {
-    return CURRENCIES.find(currency => {
+    return find(CURRENCIES, currency => {
       return currency.name === name
     });
   }
@@ -208,7 +250,7 @@ function main() {
   }
 
   function getPrice(exchange: IExchange, coin: ICoin, time: number) {
-    let json: ICoinPrice = getPriceData().find(item => {
+    let json: ICoinPrice = find(getPriceData(), item => {
         return item.exchange === exchange && item.coin === coin && item.time == time
       });
     return json && json.price || 0 // ? how to handle undefined
@@ -234,45 +276,25 @@ function main() {
     return formatter.format(price);
   }
 
-  function forEach(list: any, callback: (item: any) => void) {
-    if (list.forEach) {
-      list.forEach(callback);
-    } else if (Array && Array.from) {
-      Array.from(list).forEach(callback);
-    } else {
-      let array = [];
-      for (let i = 0 ; i < list.length; i++) {
-        array.push(list[i]);
-      }
-      if (array.forEach) {
-        array.forEach(callback);
-      } else {
-        for (let i = 0 ; i < array.length; i++) {
-          callback(array[i]);
-        }
-      }
-    }
-  }
-
   function renderTHead() {
     let thead = document.querySelector('thead');
-    forEach(thead.rows, row => row.remove());
+    forEach(thead.rows, row => thead.removeChild(row));
     let row = thead.insertRow();
     row.insertCell().outerHTML = '<th scope="col"></th>';
     forEach(getAllExchanges(), exchange => {
       let cell = row.insertCell();
-      cell.outerHTML = `<th scope="col"><a href="${exchange.url}" class="text-dark ${exchange.name}" target="_blank">${exchange.displayName}</a><small class="ban-${exchange.name}"/></th>`
+      cell.outerHTML = `<th scope="col"><a href="${exchange.url}" class="text-dark ${exchange.name}" target="_blank">${exchange.displayName}</a><small class="ban-${exchange.name}"></small></th>`
       updateExchangeStatus(exchange);
     });
   }
 
   function renderTBody() {
     let tbody = document.querySelector('tbody');
-    forEach(tbody.rows, row => row.remove());
+    forEach(tbody.rows, row => tbody.removeChild(row));
     forEach(COINS, coin => {
       let row = tbody.insertRow();
       let cell = row.insertCell();
-      cell.outerHTML = `<th scope="row">${coin.name.toUpperCase()}<br><a href="${getChartLink(coin)}" class="text-muted" target="_blank"><small class="oi oi-bar-chart" /></a></th>`
+      cell.outerHTML = `<th scope="row">${coin.name.toUpperCase()}<br><a href="${getChartLink(coin)}" class="text-muted" target="_blank"><small class="oi oi-bar-chart"></small></a></th>`
       forEach(getAllExchanges(), exchange => {
         // let cell = getCell(exchange, coin);
         let html

@@ -26,7 +26,18 @@
   </script>
   <!-- End Google Analytics -->
 
-  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"/>
+  <script>
+    (function(d, script) {
+      if (!d.Promise) {
+        script = d.createElement('script');
+        script.type = 'text/javascript';
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.5.1/bluebird.min.js';
+        d.getElementsByTagName('head')[0].appendChild(script);
+      }
+    }(document));
+  </script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
     (adsbygoogle = window.adsbygoogle || []).push({
       google_ad_client: "ca-pub-4058631809999862",
@@ -92,11 +103,11 @@
     <div class="table-responsive-lg" style="margin: 20px auto auto auto; max-width: 550px">
       <table class="table table-sm text-center">
         <thead></thead>
-        <tbody class="tbody" />
+        <tbody class="tbody"></tbody>
       </table>
     </div>
 
-    <div style="margin: 20px auto auto auto; max-width: 550px" id="disqus_thread" />
+    <div style="margin: 20px auto auto auto; max-width: 550px" id="disqus_thread"></div>
   </div>
 
   <div class="modal" id="loading-modal" tabindex="-1" role="dialog">
