@@ -85,8 +85,16 @@ const REP: ICoin = { name: 'rep' }
 const KMD: ICoin = { name: 'kmd' }
 const WAVES: ICoin = { name: 'waves' }
 const VTC: ICoin = { name: 'vtc' }
-const COINS = [BTC,ETH,XRP,LTC,QTUM,DASH,ETC,BCH,XMR,ZEC,BTG,EOS,IOTA,SNT,NEO,OMG,REP,ADA,XLM,XEM,STEEM,MER,STRAT,SBD,LSK,TIX,EMC2,ARDR,PIVX,POWR,MTL,GRS,STORJ,ARK,KMD,WAVES,VTC]
-const UPBIT_COINS = [ADA,XLM,XEM,STEEM,MER,STRAT,SBD,LSK,TIX,EMC2,ARDR,PIVX,POWR,MTL,GRS,STORJ,ARK,KMD,WAVES,VTC]
+const VEN: ICoin = { name: 'ven' }
+const ICX: ICoin = { name: 'icx' }
+const ELF: ICoin = { name: 'elf' }
+const MITH: ICoin = { name: 'mith' }
+const KNC: ICoin = { name: 'knc' }
+const MCO: ICoin = { name: 'mco' }
+const TRX: ICoin = { name: 'trx' }
+const COINS = [BTC,ETH,EOS,XRP,LTC,QTUM,ETC,BCH,BTG,OMG,TRX,DASH,XMR,ZEC,ELF,MITH,IOTA,SNT,NEO,REP,XLM,STORJ,ICX,MCO,VEN,KNC,ADA,XEM,STEEM,MER,STRAT,SBD,LSK,TIX,EMC2,ARDR,PIVX,POWR,MTL,GRS,ARK,KMD,WAVES,VTC];
+const BITHUMB_COINS = [ICX,MCO,VEN,KNC];
+const UPBIT_COINS = [ADA,XLM,XEM,STEEM,MER,STRAT,SBD,LSK,TIX,EMC2,ARDR,PIVX,POWR,MTL,GRS,STORJ,ARK,KMD,WAVES,VTC];
 
 function forEach(list: any, callback: (item: any) => void) {
   if (list.forEach) {
@@ -379,14 +387,18 @@ function main() {
   }
 
   function getChartLink(coin: ICoin) {
-    if (UPBIT_COINS.indexOf(coin) >= 0) {
+    if (BITHUMB_COINS.indexOf(coin) >= 0) {
+      return `https://kr.tradingview.com/chart/?symbol=BITHUMB:${coin.name.toUpperCase()}KRW`
+    } else if (UPBIT_COINS.indexOf(coin) >= 0) {
       return `https://upbit.com/exchange?code=CRIX.UPBIT.KRW-${coin.name.toUpperCase()}`
     }
     switch (coin) {
+      case STORJ:
+        return `https://cryptowat.ch/markets/bitfinex/stj/usd`
       case IOTA:
-        return 'https://cryptowat.ch/bitfinex/iotusd'
+        return `https://cryptowat.ch/markets/bitfinex/iot/usd`
       default:
-        return `https://cryptowat.ch/bitfinex/${coin.name}usd`
+        return `https://cryptowat.ch/markets/bitfinex/${coin.name}/usd`
     }
   }
 
